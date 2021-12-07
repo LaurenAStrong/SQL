@@ -23,7 +23,7 @@ Second, we are tasked with finding which worker has the highest salary. We could
 
 ```sql
 WITH Ranking AS (
-SELECT  title.worker_title, DENSE_RANK() OVER (ORDER BY salary DESC) as rnk
+SELECT  title.worker_title, DENSE_RANK() OVER (ORDER BY salary DESC) AS rnk
     FROM worker
     JOIN title
     ON worker.worker_id = title.worker_ref_id)
@@ -35,7 +35,7 @@ WHERE rnk = 1;
 
 This is a fun one that requires us to use the `DATEDIFF` function and use `HAVING` once the user ids are grouped together. We are finding the ids of the users who are defined as Active in our databasae. In this situation, we define Active as users who have 5 or more consecutive days logined in. We use `HAVING` instead of `WHERE` after `GROUP BY` because we want to count the ids inside each group, instead of counting the rows before the grouping, as `WHERE` would do. In the SQL order of operations, `WHERE` is executed before `GROUP BY`, whereas `HAVING` is executed after `GROUP BY`. Lastly, we added in a self join here as well! 
 
-```
+```sql
 SELECT DISTINCT Logins1.id, (SELECT name FROM accounts WHERE id=Logins1.id) AS name
 FROM logins AS Logins1, logins AS Logins2
 WHERE Logins1.id = Logins2.id AND DATEDIFF(Logins1.login_date, Logins2.login_date) BETWEEN 1 AND 4
