@@ -16,7 +16,7 @@ First, is an example of utilizing CTEs and combining them in a query later to fi
 
 SELECT DISTINCT city 
 FROM national_average 
-WHERE avg_price > national_average
+WHERE avg_price > national_average;
 ```
 
 Second, we are tasked with finding which worker has the highest salary. We could use `ORDER DESC` and `LIMIT 1`, but use the `DENSE_RANK()` function here since if there is a tie for the highest salary among more than 1 employee, we will get the full list of ties, whereas we wouldn’t be able to do so had we not used a window function such as `DENSE_RANK()` In total, in this query, we use a CTE to join two tables and perform a ranking with the window function, and then select the ranking that is equal to the highest rank of 1. 
@@ -40,7 +40,7 @@ SELECT DISTINCT Logins1.id, (SELECT name FROM accounts WHERE id=Logins1.id) AS n
 FROM logins AS Logins1, logins AS Logins2
 WHERE Logins1.id = Logins2.id AND DATEDIFF(Logins1.login_date, Logins2.login_date) BETWEEN 1 AND 4
 GROUP BY Logins1.id, Logins1.login_date
-HAVING COUNT(DISTINCT Logins2.login_date) = 4
+HAVING COUNT(DISTINCT Logins2.login_date) = 4;
 ```
 
 This problem asks use to get the project names of the projects that are on track to be overbudget. A project budget is based off of employee salaries and needs to be prorated for the length of time for each individual project so each employee’s salary is only included for the duration of the project, and not the entire year. To do this, we convert the end date and start date into the MySQL date format with `::DATE`. In addition, we include a subquery within the `FROM` statement.
@@ -62,5 +62,8 @@ FROM
             end_date,
             start_date) AS from_query
 WHERE prorated_expenses > budget
-ORDER BY title ASC
+ORDER BY title ASC;
 ``` 
+
+
+
