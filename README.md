@@ -50,20 +50,13 @@ Finally, the problem asks use to get the project names of the projects that are 
 
 ``` sql
 
-SELECT title,
-       budget,
-       CEILING(prorated_expenses) AS prorated_employee_expense
+SELECT title, budget, CEILING(prorated_expenses) AS prorated_employee_expense
 FROM
-  (SELECT title,
-          budget,
-          (end_date::DATE - start_date::DATE) * (sum(salary)/365) AS prorated_expenses
+  (SELECT title, budget, (end_date::DATE - start_date::DATE) * (sum(salary)/365) AS prorated_expenses
    FROM google_projects 
    JOIN google_emp_projects ON google_projects.id = google_emp_prjects.project_id
    JOIN google_employees ON google_emp_projects.emp_id = google_employees.id
-   GROUP BY title,
-            budget,
-            end_date,
-            start_date) AS from_query
+   GROUP BY title, budget, end_date, start_date) AS from_query
 WHERE prorated_expenses > budget
 ORDER BY title ASC;
 ``` 
