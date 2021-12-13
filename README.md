@@ -36,14 +36,17 @@ WHERE rnk = 1;
 This is a fun one that requires us to use the `DATEDIFF` function and use `HAVING` once the user ids are grouped together. We are finding the ids of the users who are defined as Active in our database. In this situation, we define Active as users who have 5 or more consecutive days logged in. We use `HAVING` instead of `WHERE` after `GROUP BY` because we want to count the ids inside each group, instead of counting the rows before the grouping, as `WHERE` would do. In the SQL order of operations, `WHERE` is executed before `GROUP BY`, whereas `HAVING` is executed after `GROUP BY`. Lastly, we added in a self join here as well! 
 
 ``` sql
-SELECT DISTINCT Logins1.id, (SELECT name FROM accounts WHERE id=Logins1.id) AS name
+SELECT DISTINCT Logins1.id, 
+   (SELECT name 
+   FROM accounts 
+   WHERE id = Logins1.id) AS name
 FROM logins AS Logins1, logins AS Logins2
 WHERE Logins1.id = Logins2.id AND DATEDIFF(Logins1.login_date, Logins2.login_date) BETWEEN 1 AND 4
 GROUP BY Logins1.id, Logins1.login_date
 HAVING COUNT(DISTINCT Logins2.login_date) = 4;
 ```
 
-This problem asks use to get the project names of the projects that are on track to be overbudget. A project budget is based off of employee salaries and needs to be prorated for the length of time for each individual project so each employee’s salary is only included for the duration of the project, and not the entire year. To do this, we convert the end date and start date into the MySQL date format with `::DATE`. In addition, we include a subquery within the `FROM` statement.
+Finally, the problem asks use to get the project names of the projects that are on track to be overbudget. A project budget is based off of employee salaries and needs to be prorated for the length of time for each individual project so each employee’s salary is only included for the duration of the project, and not the entire year. To do this, we convert the end date and start date into the MySQL date format with `::DATE`. In addition, we include a subquery within the `FROM` statement.
 
 ``` sql
 
@@ -55,7 +58,7 @@ FROM
           budget,
           (end_date::DATE - start_date::DATE) * (sum(salary)/365) AS prorated_expenses
    FROM google_projects 
-   JOIN google_emp_projects ON linkedin_projects.id = google_emp_prjects.project_id
+   JOIN google_emp_projects ON google_projects.id = google_emp_prjects.project_id
    JOIN google_employees ON google_emp_projects.emp_id = google_employees.id
    GROUP BY title,
             budget,
